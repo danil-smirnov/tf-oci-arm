@@ -50,6 +50,7 @@ Update the secret values:
 1. Update your `github_user` in the `secret.auto.tfvars` file
 2. Create a Compartment for `tf-oci-arm`: https://cloud.oracle.com/identity/compartments  
    Copy the OCID of your new compartment  
+   Copy your tenancy prefix: https://cloud.oracle.com/compute/instances/create (click "Edit" in "Placement")  
    Update the config  
 3. Create a Tailscale Auth Key: https://login.tailscale.com/admin/settings/authkeys  
    Copy the key  
@@ -57,18 +58,18 @@ Update the secret values:
 
 Now, create a Stack in Oracle Cloud: https://cloud.oracle.com/resourcemanager/stacks  
 Upload your folder or zip it up first.  
-(I have to use a zip personally, because WSL2 browser uploads are limited)
-
-Copy your Compartment OCID into the field again.
 
 Ack your values in the form.
 
 Apply the Stack!
 
 Hopefully it succeeds for you!  
-It should if you made no changes to the cloud-init and your values are correct.
+It should if you made no changes to the cloud-init and your values are correct.  
+If you've got "Out of host capacity." error, see article  
+"I get an “out of host capacity” error when I try to create an Always Free Compute instance. What can I do?"  
+https://www.oracle.com/cloud/free/faq.html
 
-You should be able to `ssh oracle-arm` now from any machine with your private keys on your tailnet.
+You should be able to `ssh <github_user>@oracle-arm` now from any machine with your private keys on your tailnet.
 
 ## sudo
 

@@ -1,12 +1,31 @@
 provider "oci" {}
 
-variable oci_compartment_id {
+variable "oci_compartment_id" {
   type = string
+}
+
+variable "oci_tenancy_prefix" {
+  type = string
+}
+
+variable "oci_availability_domain" {
+  type    = string
+  default = "EU-FRANKFURT-1-AD-3"
 }
 
 variable "tailscale_auth_key" {
   type      = string
   sensitive = true
+}
+
+variable "github_user" {
+  type = string
+}
+
+variable "oci_source_id" {
+  type = string
+  # Platform Image: Ubuntu 20.04
+  default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaa6ueulrtedgclrxznl5pkzhzseddl7b6iq6jhdl3vjm62zhddpxta"
 }
 
 resource "oci_core_instance" "oracle-arm" {
@@ -20,9 +39,8 @@ resource "oci_core_instance" "oracle-arm" {
   }
   source_details {
     boot_volume_size_in_gbs = "200"
-    # Platform Image: Ubuntu 20.04
-    source_id   = "ocid1.image.oc1.phx.aaaaaaaa3nsfzlvkvrfug4xby77srfr43iinfkw3clur5izvlnqtxqdyj5sq"
-    source_type = "image"
+    source_id               = var.oci_source_id
+    source_type             = "image"
   }
 
   metadata = {
@@ -30,7 +48,7 @@ resource "oci_core_instance" "oracle-arm" {
       templatefile(
         "userdata.tpl.yaml",
         {
-          github_user = var.github_user,
+          github_user        = var.github_user,
           tailscale_auth_key = var.tailscale_auth_key,
         }
       )
@@ -47,7 +65,7 @@ resource "oci_core_instance" "oracle-arm" {
   availability_config {
     recovery_action = "RESTORE_INSTANCE"
   }
-  availability_domain = "WMEB:PHX-AD-3"
+  availability_domain = "${var.oci_tenancy_prefix}:${var.oci_availability_domain}"
 
   instance_options {
     are_legacy_imds_endpoints_disabled = "false"
